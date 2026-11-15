@@ -1,0 +1,460 @@
+{
+  "apiVersion": 1,
+  "id": "comfyui-pro",
+  "name": "ComfyUI Pro",
+  "version": "0.1.0",
+  "description": "受管workflow、LoRA/政策、批次任务与逐item可靠交付；Pi按需编写提示词",
+  "author": "Pi IM Bot contributors · reference: lumingya / WsureDev",
+  "license": "MIT",
+  "entry": "dist/index.mjs",
+  "files": [
+    "dist/index.mjs",
+    "assets/sensitive-words.json",
+    "assets/usage.md",
+    "LICENSE",
+    "NOTICE.md",
+    "MIGRATION.md",
+    "API-SNAPSHOT.json",
+    "ZOD-LICENSE.txt",
+    "README.md",
+    "assets/example-workflow.json"
+  ],
+  "connections": [
+    {
+      "alias": "render",
+      "title": "ComfyUI具名服务",
+      "kind": "service",
+      "service": "comfy@1",
+      "required": false
+    }
+  ],
+  "operations": [
+    {
+      "id": "usage",
+      "title": "Comfy用法",
+      "description": "只读用法，不调用LLM或GPU",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "execution": "foreground",
+      "data": "none",
+      "timeoutMs": 10000,
+      "grants": [],
+      "tool": true
+    },
+    {
+      "id": "workflows",
+      "title": "Comfy工作流与LoRA目录",
+      "description": "读取此服务绑定的静态模型和LoRA元数据，不扫描宿主目录",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "workflow": {
+            "type": "string"
+          },
+          "section": {
+            "type": "string",
+            "enum": ["workflows", "parameters", "models", "loras"]
+          },
+          "cursor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000
+          }
+        },
+        "additionalProperties": false
+      },
+      "execution": "foreground",
+      "data": "none",
+      "timeoutMs": 10000,
+      "grants": ["service:render", "artifact.write"],
+      "actions": ["comfy_catalog"],
+      "tool": true
+    },
+    {
+      "id": "generate",
+      "title": "Comfy生成（后台）",
+      "description": "提交1-16项并等待Core已有receipt，完成统一交付；未知结果不能重提",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8000
+          },
+          "negative_prompt": {
+            "type": "string"
+          },
+          "workflow": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "direct_send": {
+            "type": "boolean"
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clear_defaults": {
+            "type": "boolean"
+          },
+          "loras": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "strength": {
+                  "type": "number"
+                },
+                "triggers": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "clip_strength": {
+                  "type": "number",
+                  "minimum": -4,
+                  "maximum": 4
+                }
+              },
+              "required": ["name"],
+              "additionalProperties": false
+            }
+          },
+          "node_steps": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200
+            }
+          }
+        },
+        "required": ["prompt"],
+        "additionalProperties": false
+      },
+      "execution": "background",
+      "data": "none",
+      "timeoutMs": 240000,
+      "grants": ["service:render", "artifact.write", "state.read", "state.write", "authorization.inspect"],
+      "actions": ["comfy_generate"],
+      "tool": true,
+      "poll": "poll",
+      "cancel": "cancel",
+      "recover": "recover",
+      "handleSchema": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16
+          },
+          "direct": {
+            "type": "boolean"
+          }
+        },
+        "required": ["count", "direct"],
+        "additionalProperties": false
+      },
+      "pollInputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 16
+              },
+              "direct": {
+                "type": "boolean"
+              }
+            },
+            "required": ["count", "direct"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["handle"],
+        "additionalProperties": false
+      },
+      "cancelInputSchema": {
+        "type": "object",
+        "properties": {
+          "handle": {
+            "type": "object",
+            "properties": {
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 16
+              },
+              "direct": {
+                "type": "boolean"
+              }
+            },
+            "required": ["count", "direct"],
+            "additionalProperties": false
+          }
+        },
+        "required": ["handle"],
+        "additionalProperties": false
+      },
+      "recoverInputSchema": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 8000
+              },
+              "negative_prompt": {
+                "type": "string"
+              },
+              "workflow": {
+                "type": "string"
+              },
+              "count": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 16
+              },
+              "direct_send": {
+                "type": "boolean"
+              },
+              "steps": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 200
+              },
+              "seed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "clear_defaults": {
+                "type": "boolean"
+              },
+              "loras": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "strength": {
+                      "type": "number"
+                    },
+                    "triggers": {
+                      "type": "array",
+                      "items": {
+                        "type": "integer"
+                      }
+                    },
+                    "clip_strength": {
+                      "type": "number",
+                      "minimum": -4,
+                      "maximum": 4
+                    }
+                  },
+                  "required": ["name"],
+                  "additionalProperties": false
+                }
+              },
+              "node_steps": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 200
+                }
+              }
+            },
+            "required": ["prompt"],
+            "additionalProperties": false
+          },
+          "handle": {},
+          "intent": {
+            "type": "string",
+            "enum": ["resume", "cancel", "reconcile"]
+          }
+        },
+        "required": ["input", "handle"],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "manage",
+      "title": "Comfy管理政策",
+      "description": "范围history/workflow/steps/敏感策略和实例锁；只接受Core显式管理员权限",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["history", "lock", "sensitive", "workflow", "steps"]
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "required": ["action"],
+        "additionalProperties": false
+      },
+      "execution": "foreground",
+      "data": "none",
+      "timeoutMs": 10000,
+      "grants": ["state.read", "state.write", "service:render"],
+      "actions": ["comfy_manage"],
+      "tool": true
+    },
+    {
+      "id": "record",
+      "title": "实际提交JSON记录",
+      "description": "ring20/FIFO pop导出完整JSON为本范围Artifact；不删除恢复receipt",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["list", "pop"]
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          }
+        },
+        "additionalProperties": false
+      },
+      "execution": "foreground",
+      "data": "scope",
+      "timeoutMs": 30000,
+      "grants": ["state.read", "state.write", "storage.write", "artifact.read", "artifact.write"],
+      "actions": ["comfy_catalog"],
+      "tool": true
+    }
+  ],
+  "commands": [
+    {
+      "id": "usage",
+      "names": ["comfy帮助", "comfyui_usage"],
+      "operation": "usage",
+      "arguments": "none",
+      "description": "Comfy用法"
+    },
+    {
+      "id": "workflows",
+      "names": ["comfy_list", "comfyui_workflows", "comfy_ls"],
+      "operation": "workflows",
+      "arguments": "text",
+      "parser": "workflows",
+      "description": "绑定工作流/模型/LoRA目录"
+    },
+    {
+      "id": "draw",
+      "names": ["画图", "comfyui_txt2img", "绘画"],
+      "operation": "generate",
+      "arguments": "text",
+      "parser": "draw",
+      "description": "合并转发格式画图"
+    },
+    {
+      "id": "draw_direct",
+      "names": ["画图no"],
+      "operation": "generate",
+      "arguments": "text",
+      "parser": "draw_direct",
+      "description": "逐图直发"
+    },
+    {
+      "id": "history",
+      "names": ["comfy_history", "提示词历史", "提示词保留"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "history",
+      "description": "管理history"
+    },
+    {
+      "id": "lock",
+      "names": ["comfy_lock", "全局锁定", "锁图", "绘图锁定"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "lock",
+      "description": "管理lock"
+    },
+    {
+      "id": "workflow",
+      "names": ["comfy_use"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "workflow",
+      "description": "管理workflow"
+    },
+    {
+      "id": "steps",
+      "names": ["comfy_steps"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "steps",
+      "description": "管理steps"
+    },
+    {
+      "id": "sensitive",
+      "names": ["违禁级别", "banlevel", "敏感级别"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "sensitive",
+      "description": "管理sensitive"
+    },
+    {
+      "id": "record",
+      "names": ["comfy_record"],
+      "operation": "record",
+      "arguments": "text",
+      "parser": "record",
+      "description": "导出或FIFO pop提交JSON"
+    },
+    {
+      "id": "add_steps",
+      "names": ["comfy_add"],
+      "operation": "manage",
+      "arguments": "text",
+      "parser": "add_steps",
+      "description": "当前工作流已登记节点步数：list/clear/节点 off/多节点数值"
+    }
+  ],
+  "hooks": [
+    {
+      "id": "history",
+      "point": "model.history@1",
+      "mode": "collect",
+      "timeoutMs": 1000,
+      "onError": "fail",
+      "grants": ["state.read"]
+    }
+  ]
+}

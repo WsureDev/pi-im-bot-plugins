@@ -1,0 +1,106 @@
+{
+  "default_workflow": {
+    "type": "string",
+    "description": "默认工作流资源ID（须绑定在render服务）",
+    "default": "",
+    "scope": ["instance"]
+  },
+  "allowed_scopes": {
+    "type": "list",
+    "description": "允许的Bot群room ID列表，默认不开放群",
+    "default": [],
+    "scope": ["instance"]
+  },
+  "allow_private": {
+    "type": "bool",
+    "description": "允许私聊绘图",
+    "default": true,
+    "scope": ["instance"]
+  },
+  "cooldown_seconds": {
+    "type": "int",
+    "description": "同范围每触发人冷却秒数",
+    "default": 30,
+    "scope": ["instance"]
+  },
+  "max_count": {
+    "type": "int",
+    "description": "单批最大项数（1到16）",
+    "default": 16,
+    "scope": ["instance"]
+  },
+  "max_loras": {
+    "type": "int",
+    "description": "单次选择LoRA数量上限",
+    "default": 4,
+    "scope": ["instance"]
+  },
+  "lora_enabled": {
+    "type": "bool",
+    "description": "允许显式LoRA选择及清默认",
+    "default": true,
+    "scope": ["instance"]
+  },
+  "keep_defaults_when_selected": {
+    "type": "bool",
+    "description": "选中LoRA时保留工作流活跃默认，空槽不足拒绝",
+    "default": true,
+    "scope": ["instance"]
+  },
+  "default_negative": {
+    "type": "text",
+    "description": "追加默认负词",
+    "default": "",
+    "scope": ["instance"]
+  },
+  "lockdown": {
+    "type": "bool",
+    "description": "无动态状态时的实例默认锁",
+    "default": false,
+    "scope": ["instance"]
+  },
+  "lockdown_command_enabled": {
+    "type": "bool",
+    "description": "允许管理命令改变实例锁",
+    "default": true,
+    "scope": ["instance"]
+  },
+  "group_sensitive": {
+    "type": "string",
+    "description": "群默认敏感词级别",
+    "default": "full",
+    "scope": ["instance"],
+    "options": ["none", "lite", "full"]
+  },
+  "private_sensitive": {
+    "type": "string",
+    "description": "私聊默认敏感词级别",
+    "default": "lite",
+    "scope": ["instance"],
+    "options": ["none", "lite", "full"]
+  },
+  "admin_bypass_whitelist": {
+    "type": "bool",
+    "description": "显式管理权限可绕过群白名单",
+    "default": false,
+    "scope": ["instance"]
+  },
+  "admin_bypass_cooldown": {
+    "type": "bool",
+    "description": "显式管理权限可绕过冷却",
+    "default": false,
+    "scope": ["instance"]
+  },
+  "admin_bypass_sensitive": {
+    "type": "bool",
+    "description": "显式管理权限可绕过敏感词",
+    "default": false,
+    "scope": ["instance"]
+  },
+  "inject_selected_prompt_hints": {
+    "type": "bool",
+    "description": "注入选中LoRA的明确/默认/唯一提示词",
+    "default": true,
+    "scope": ["instance"]
+  }
+}

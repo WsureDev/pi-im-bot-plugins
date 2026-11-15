@@ -1,0 +1,32 @@
+{
+  "bot_name": {
+    "type": "string",
+    "description": "文本摘要显示名称",
+    "default": "Pi IM Bot",
+    "scope": ["instance", "account", "room", "conversation"]
+  },
+  "default_format": {
+    "type": "string",
+    "description": "默认输出",
+    "options": ["card", "text"],
+    "labels": ["PNG 卡片与文字摘要", "仅文字摘要"],
+    "default": "card",
+    "scope": ["instance", "account", "room", "conversation"]
+  },
+  "theme": {
+    "type": "string",
+    "description": "卡片主题",
+    "options": ["teal", "blue", "rose"],
+    "labels": ["青绿", "深蓝", "暖红"],
+    "default": "teal",
+    "scope": ["instance", "account", "room", "conversation"]
+  },
+  "warn_percent": {
+    "type": "int",
+    "description": "卡片告警色阈值（%）",
+    "hint": "只影响本次状态卡片的标色，不创建主动提醒任务。",
+    "default": 85,
+    "slider": { "min": 50, "max": 100, "step": 5 },
+    "scope": ["instance", "account", "room", "conversation"]
+  }
+}

@@ -1,0 +1,1 @@
+New independently authored Pi IM Bot media diagnostic/export plugin (MIT). The selection audit consulted WsureDev's astrbot_plugin_kuang v0.9.0 (https://github.com/WsureDev/astrbot_plugin_kuang); this package contains none of its code and does not implement its detection/rendering behavior. Bundles Zod 4.6.7, MIT; see ZOD-LICENSE.txt.

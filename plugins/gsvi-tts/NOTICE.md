@@ -1,0 +1,5 @@
+This is independently authored Pi IM Bot TypeScript code (MIT), informed by the GSVI wire protocol documented by wsure's astrbot_plugin_gsvi_short_tts v1.4.1 (https://github.com/WsureDev/astrbot_plugin_gsvi_short_tts). The inspected upstream does not declare a license; no permission to redistribute its Python implementation is inferred and no Python implementation is included. Not affiliated with or a complete replacement for upstream. Bundles Zod 4.6.7 under MIT; see ZOD-LICENSE.txt.
+
+Milestone T additionally references the deployed v1.4.1 README/commands/channels/origin/outgoing policy as a behavioral specification. Source SHA-256 inventory and the independent TypeScript migration matrix are retained in the Bot report. No Python implementation is included. Formal configurations, legacy KV and production output are not imported.
+
+The 0.3.0 configuration revision restores the deployed schema's field names, nested preset, UI descriptions and configuration semantics. Core holds transport secrets; the Worker receives only business values. Static source checks do not constitute voice or synthesis runtime validation.

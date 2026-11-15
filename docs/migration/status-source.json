@@ -1,0 +1,26 @@
+{
+  "source": "status-deployed-2.1.0",
+  "observedAt": "2026-11-10T04:38:48.343Z",
+  "repository": "https://github.com/FlanChanXwO/astrbot_plugin_status",
+  "declaredVersion": "v2.1.0",
+  "gitRevision": null,
+  "reason": "Deployment directory contains no Git metadata; deployed content is pinned by SHA-256",
+  "files": {
+    "main.py": "4bf4b5de820f9758134edd12b0f0b69e4cee0a0ded0f849f122277ffcbfaa9b8",
+    "metadata.yaml": "7810bbab42b148904c9611c4c284c227bf4784f3961c482da9bc3b63958de3fa",
+    "_conf_schema.json": "5a9f305a44b3da2d58c9037afdc53624bd86084da5c575c90464cb906a5e6906",
+    "LICENSE": "f440d399276dcbd8a845dee6e873a54c1f59ff44b502b45f3bc9352224ed5789",
+    "core/__init__.py": "0f0c9205d09de81dc71949c459a20578330fed099ab2ac0b1a84af7203a8f5a8",
+    "core/status_service.py": "af29d138f17f42ce789aea0e0d4c95fba988c83b2c1a3751dccc1a3ab781c7cc",
+    "core/constants.py": "f8ebfc27cf77c9cc8b254a3fc9edf0813e587f16d6bcca5b3a01c861c3527e0f",
+    "core/models.py": "8a5b17755dfb78d19ddd23c7869a4c8341f78c1a1e266decc1abadbfe55431f3",
+    "core/traffic_usage.py": "f3862d7bde078c9735584503a889f06de013952fefd00141ce15081007a1908f",
+    "core/data_source.py": "019ae7ff7695dd939c079ed391f141373b9d6d062fcf07fb6e4dece80bf35667",
+    "core/utils.py": "675498146733b688c56c75dcd9789a4e7677599da25165cb6ff58d7596b80a7e",
+    "core/html_render.py": "eda22f51f3f98fb79c867a38aaf181b8496ebb95020e1a392983d3f131c384a0",
+    "core/logger.py": "dc7965a77d71320138778731fdc6247c42b3a2782cee803ab4d94270da247bb3",
+    "core/config_manager.py": "ba6d0727ff62bc7e54b77ef222ebd20ca3db7447df73304c276f05f932de6e15",
+    "core/bot_identity_resolver.py": "9b85f2992b72965ecba5a8779670f66bf15a6019533c84ef52c84854a0627d36",
+    "core/state_store.py": "14d323a109fa482fe9aa3218ef343b9b05b1058e421da22a58aabae7096f2ffe"
+  }
+}

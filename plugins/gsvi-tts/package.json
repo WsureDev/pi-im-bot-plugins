@@ -1,0 +1,10 @@
+{
+  "name": "@pi-im-bot/plugin-gsvi-tts",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "zod": "4.6.7"
+  }
+}

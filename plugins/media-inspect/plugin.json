@@ -1,0 +1,46 @@
+{
+  "apiVersion": 1,
+  "id": "media-inspect",
+  "name": "媒体诊断与导出",
+  "version": "0.1.0",
+  "description": "读取本范围真实 mediaId，检查 PNG/WAV/UTF-8，导出原文与 JSON 报告。新的诊断消费者，不是框迁移。",
+  "author": "Pi IM Bot contributors",
+  "license": "MIT",
+  "entry": "dist/index.mjs",
+  "files": ["dist/index.mjs", "LICENSE", "NOTICE.md", "MIGRATION.md", "API-SNAPSHOT.json", "ZOD-LICENSE.txt"],
+  "operations": [
+    {
+      "id": "inspect",
+      "title": "诊断并导出本范围媒体（Job）",
+      "description": "诊断并导出本范围媒体（Job）",
+      "tool": true,
+      "execution": "background",
+      "timeoutMs": 240000,
+      "grants": ["media.read", "history.read", "artifact.write"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "commands": [
+    {
+      "id": "inspect",
+      "names": ["media-inspect"],
+      "operation": "inspect",
+      "arguments": "text",
+      "description": "提供 mediaId，或使用最近 20 条本范围历史中的入站附件"
+    }
+  ]
+}

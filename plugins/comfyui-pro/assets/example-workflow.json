@@ -1,0 +1,174 @@
+{
+  "id": "example",
+  "name": "安装示例（请替换模型声明）",
+  "description": "自编离线API示例，模型名须由operator替换为其库存，不包含真实模型。",
+  "graph": {
+    "1": {
+      "class_type": "CheckpointLoaderSimple",
+      "inputs": {
+        "ckpt_name": "REPLACE_WITH_INSTALLED.safetensors"
+      }
+    },
+    "4": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "original positive",
+        "clip": [
+          "1",
+          1
+        ]
+      }
+    },
+    "5": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "original negative",
+        "clip": [
+          "1",
+          1
+        ]
+      }
+    },
+    "6": {
+      "class_type": "EmptyLatentImage",
+      "inputs": {
+        "width": 64,
+        "height": 64,
+        "batch_size": 1
+      }
+    },
+    "7": {
+      "class_type": "KSampler",
+      "inputs": {
+        "seed": 1,
+        "steps": 12,
+        "cfg": 7,
+        "sampler_name": "euler",
+        "scheduler": "normal",
+        "denoise": 1,
+        "model": [
+          "1",
+          0
+        ],
+        "positive": [
+          "4",
+          0
+        ],
+        "negative": [
+          "5",
+          0
+        ],
+        "latent_image": [
+          "6",
+          0
+        ]
+      }
+    },
+    "8": {
+      "class_type": "VAEDecode",
+      "inputs": {
+        "samples": [
+          "7",
+          0
+        ],
+        "vae": [
+          "1",
+          2
+        ]
+      }
+    },
+    "9": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "images": [
+          "8",
+          0
+        ],
+        "filename_prefix": "fixture"
+      }
+    }
+  },
+  "parameters": {
+    "positive": {
+      "paths": [
+        [
+          "4",
+          "inputs",
+          "text"
+        ]
+      ],
+      "type": "string",
+      "encoding": "identity",
+      "integer": false,
+      "offsets": [],
+      "maxLength": 16000
+    },
+    "negative": {
+      "paths": [
+        [
+          "5",
+          "inputs",
+          "text"
+        ]
+      ],
+      "type": "string",
+      "encoding": "identity",
+      "integer": false,
+      "offsets": [],
+      "maxLength": 16000,
+      "default": "original negative"
+    },
+    "seed": {
+      "paths": [
+        [
+          "7",
+          "inputs",
+          "seed"
+        ]
+      ],
+      "type": "number",
+      "encoding": "identity",
+      "integer": false,
+      "offsets": [],
+      "min": 0,
+      "max": 9007199254740991,
+      "maxLength": 4000
+    },
+    "steps": {
+      "paths": [
+        [
+          "7",
+          "inputs",
+          "steps"
+        ]
+      ],
+      "type": "number",
+      "encoding": "identity",
+      "integer": false,
+      "offsets": [],
+      "min": 1,
+      "max": 200,
+      "maxLength": 4000
+    }
+  },
+  "bindings": {
+    "positive": "positive",
+    "negative": "negative",
+    "seed": "seed",
+    "steps": "steps",
+    "stepNodes": {
+      "7": "steps"
+    },
+    "loras": []
+  },
+  "outputs": [
+    "9"
+  ],
+  "models": [
+    {
+      "role": "checkpoint",
+      "filename": "REPLACE_WITH_INSTALLED.safetensors"
+    }
+  ],
+  "loras": []
+}

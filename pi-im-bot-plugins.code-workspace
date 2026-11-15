@@ -1,0 +1,7 @@
+{
+  "folders": [
+    { "name": "插件迁移", "path": "." },
+    { "name": "Bot API 参考", "path": "../pi-im-bot" }
+  ],
+  "settings": { "files.exclude": { "**/node_modules": true }, "search.exclude": { "**/node_modules": true, "**/data": true, "**/dist": true } }
+}

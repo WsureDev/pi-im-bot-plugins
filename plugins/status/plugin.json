@@ -1,0 +1,50 @@
+{
+  "apiVersion": 1,
+  "id": "system-status",
+  "name": "系统状态",
+  "version": "0.1.0",
+  "description": "读取 Bot 控制面可见的系统指标，生成状态卡片或文本；工具与指令共用操作，不额外调用模型。",
+  "author": "Pi IM Bot migration workspace · original behavior: FlanChanXwO",
+  "license": "AGPL-3.0-only",
+  "categories": ["运维与诊断"],
+  "entry": "dist/index.mjs",
+  "files": [
+    "dist/index.mjs",
+    "assets/renderer.wasm",
+    "assets/DejaVuSans.ttf",
+    "assets/FONT-LICENSE.txt",
+    "assets/RESVG-LICENSE.txt",
+    "assets/ZOD-LICENSE.txt",
+    "LICENSE",
+    "NOTICE.md",
+    "MIGRATION.md",
+    "API-SNAPSHOT.json"
+  ],
+  "operations": [
+    {
+      "id": "inspect",
+      "title": "查看系统状态",
+      "description": "Read OS-visible CPU, RAM, swap, disk, network counters and Bot runtime status from the trusted Bot control plane. Use for system or server status questions. Can return a PNG card or text/JSON. This does not report the plugin Worker or Agent sandbox as the host.",
+      "tool": true,
+      "execution": "foreground",
+      "timeoutMs": 10000,
+      "grants": ["system.status", "artifact.write"],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "format": { "type": "string", "enum": ["auto", "card", "text", "json", "help"], "default": "auto" }
+        },
+        "additionalProperties": false
+      }
+    }
+  ],
+  "commands": [
+    {
+      "id": "status",
+      "names": ["状态", "sysstatus"],
+      "operation": "inspect",
+      "description": "查看系统状态；支持 --card、--text、--json 和 help",
+      "parser": "status_args"
+    }
+  ]
+}

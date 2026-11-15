@@ -1,0 +1,243 @@
+{
+  "apiVersion": 1,
+  "id": "gsvi-tts",
+  "name": "GSVI 语音",
+  "version": "0.3.0",
+  "description": "显式语音及按目的地政策的 Agent 纯文本异步呈现",
+  "author": "Pi IM Bot contributors · protocol reference: wsure",
+  "license": "MIT",
+  "entry": "dist/index.mjs",
+  "files": [
+    "dist/index.mjs",
+    "LICENSE",
+    "NOTICE.md",
+    "MIGRATION.md",
+    "API-SNAPSHOT.json",
+    "ZOD-LICENSE.txt",
+    "UNICODE-LICENSE.txt"
+  ],
+  "connections": [
+    {
+      "alias": "speech",
+      "title": "GSVI 语音服务",
+      "kind": "service",
+      "service": "gsvi@1",
+      "required": false
+    }
+  ],
+  "operations": [
+    {
+      "id": "voices",
+      "title": "查询 GSVI 音色",
+      "description": "查询 GSVI 音色",
+      "tool": true,
+      "execution": "foreground",
+      "timeoutMs": 10000,
+      "grants": [
+        "service:speech"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "select",
+      "title": "选择本范围音色",
+      "description": "选择本范围音色",
+      "tool": true,
+      "execution": "foreground",
+      "timeoutMs": 10000,
+      "grants": [
+        "service:speech",
+        "storage.write"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "voice": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "voice"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "speak",
+      "title": "显式合成语音（Job）",
+      "description": "显式合成语音（Job）",
+      "tool": true,
+      "execution": "background",
+      "timeoutMs": 300000,
+      "grants": [
+        "service:speech",
+        "artifact.write",
+        "storage.read"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "voice": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "serviceTimeout": "speech",
+      "actions": [
+        "tts_synthesize"
+      ]
+    },
+    {
+      "id": "policy",
+      "title": "本范围自动语音设置",
+      "description": "查看、开关及配置自动语音。状态与关闭不依赖上游。",
+      "tool": false,
+      "execution": "foreground",
+      "timeoutMs": 10000,
+      "grants": [
+        "storage.read",
+        "storage.write",
+        "service:speech"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "render",
+      "title": "呈现已选语音",
+      "description": "执行 Core 已持久接纳的呈现计划",
+      "tool": false,
+      "execution": "background",
+      "data": "none",
+      "timeoutMs": 300000,
+      "grants": [
+        "service:speech",
+        "artifact.write"
+      ],
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "voice": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "text_lang": {
+            "type": "string"
+          },
+          "emotion": {
+            "type": "string"
+          },
+          "prompt_text_lang": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "text",
+          "voice",
+          "version",
+          "text_lang",
+          "emotion",
+          "prompt_text_lang"
+        ],
+        "additionalProperties": false
+      },
+      "actions": [
+        "tts_synthesize"
+      ],
+      "serviceTimeout": "speech"
+    }
+  ],
+  "commands": [
+    {
+      "id": "voices",
+      "names": [
+        "voices"
+      ],
+      "operation": "voices",
+      "arguments": "none",
+      "description": "查询可用音色"
+    },
+    {
+      "id": "voice",
+      "names": [
+        "voice"
+      ],
+      "operation": "select",
+      "arguments": "text",
+      "textField": "voice",
+      "description": "选择本聊天范围音色"
+    },
+    {
+      "id": "speak",
+      "names": [
+        "tts"
+      ],
+      "operation": "speak",
+      "arguments": "text",
+      "description": "后台合成文字，完成后统一交付 WAV 和原文"
+    },
+    {
+      "id": "usetts",
+      "names": [
+        "usetts"
+      ],
+      "operation": "policy",
+      "arguments": "text",
+      "description": "本范围自动语音：状态/on/off/list/音色 字数 概率"
+    }
+  ],
+  "hooks": [
+    {
+      "id": "automatic",
+      "point": "delivery.presentation@1",
+      "mode": "select",
+      "timeoutMs": 1000,
+      "onError": "skip",
+      "grants": [
+        "storage.read"
+      ],
+      "selector": {
+        "phases": [
+          "final",
+          "notification",
+          "tool-direct"
+        ]
+      },
+      "inspectCapabilities": [
+        "tts_synthesize",
+        "plugin:self/render"
+      ]
+    }
+  ],
+  "configurationProjection": "gsvi@1"
+}

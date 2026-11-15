@@ -1,0 +1,27 @@
+node_modules/
+.codex/
+AGENTS.md
+AGENTS.override.md
+plugins/*/dist/
+plugins/*/assets/renderer.wasm
+plugins/*/API-SNAPSHOT.json
+artifacts/
+.dev-source/
+.env*
+!.env.example
+/config/
+/data/
+/plugin-data/
+/dist/
+*.pem
+*.key
+*.log
+
+# Source is shared through Git only. Keep review state and archives local.
+private-review/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar

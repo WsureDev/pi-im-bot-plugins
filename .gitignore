@@ -1,4 +1,4 @@
-node_modules/
+node_modules
 .codex/
 AGENTS.md
 AGENTS.override.md

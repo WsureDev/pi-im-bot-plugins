@@ -127,3 +127,7 @@ text 最多 100000 字符、artifactIds 最多 12 个。`suppressText: true` 表
 代码快照、实例配置、范围绑定和私有数据分别管理。升级不自动删除旧配置字段或迁移业务数据；不兼容配置会阻止启用，需明确处理迁移与回滚。
 
 GSVI 原生配置有固定的 `configurationProjection:"gsvi@1"`，将完整原 schema 与 Core 托管凭据在同一个配置页编辑；范围、缓存与一次迁移见 [GSVI 原生配置页](gsvi-native-configuration.md)。它不是通用凭据投影或任意网络接口。
+
+## 通用资源提供者
+
+插件可以通过 `resourceProvider`、操作 `inputUiSchema` 和可选 `resource.http` grant 声明通用资源，不需要 Bot 增加业务类型。资源发现、隔离调用、显式 Tool 导出、上下文和 HTTP 示例见 [正式控制面规范](live-control-plane.md)。

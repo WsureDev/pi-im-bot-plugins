@@ -1,4 +1,4 @@
-import { readdir, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { readdir, mkdir, cp, readFile, writeFile } from 'node:fs/promises'
 import { join, resolve } from 'node:path'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
@@ -26,7 +26,25 @@ for (const file of await readdir(source)) {
     )
   }
 }
+await cp(join(framework, 'docs/framework/live-control-plane.md'), join(target, 'live-control-plane.md'))
+const packageGuide = join(target, 'package-and-config.md')
+await writeFile(
+  packageGuide,
+  (await readFile(packageGuide, 'utf8')).replace(
+    '../framework/live-control-plane.md',
+    'live-control-plane.md'
+  )
+)
 const contracts = [
+  'docs/framework/live-control-plane.md',
+  'src/resource-providers/contracts.ts',
+  'src/resource-providers/definition.ts',
+  'src/resource-providers/context.ts',
+  'src/resource-providers/dispatch.ts',
+  'src/resource-providers/http.ts',
+  'src/plugins/sdk/resource-http.ts',
+  'src/permissions/capability-policy.ts',
+  'src/permissions/identity.ts',
   'src/plugins/contracts.ts',
   'src/services/comfy/resources.ts',
   'src/services/comfy/catalog.ts',

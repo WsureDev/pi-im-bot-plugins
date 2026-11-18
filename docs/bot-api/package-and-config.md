@@ -128,6 +128,6 @@ text 最多 100000 字符、artifactIds 最多 12 个。`suppressText: true` 表
 
 GSVI 原生配置有固定的 `configurationProjection:"gsvi@1"`，将完整原 schema 与 Core 托管凭据在同一个配置页编辑；范围、缓存与一次迁移见 [GSVI 原生配置页](gsvi-native-configuration.md)。它不是通用凭据投影或任意网络接口。
 
-## 通用资源提供者
+## 独立资源依赖
 
-插件可以通过 `resourceProvider`、操作 `inputUiSchema` 和可选 `resource.http` grant 声明通用资源，不需要 Bot 增加业务类型。资源发现、隔离调用、显式 Tool 导出、上下文和 HTTP 示例见 [正式控制面规范](live-control-plane.md)。
+插件通过 `resources` 声明所需协议和方法，在配置页绑定独立资源实例，通过公共 SDK 调用。资源实现和插件分别管理，不再使用插件 `resourceProvider` 将自身操作投影为资源。见 [插件资源接口](resource-providers.md)。

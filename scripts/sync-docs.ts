@@ -36,11 +36,17 @@ await writeFile(
   )
 )
 const contracts = [
+  'docs/framework/resource-providers.md',
+  'src/resource-providers/protocol.ts',
+  'src/resource-providers/registry.ts',
+  'src/resource-providers/service.ts',
+  'src/resource-providers/plugin-rpc.ts',
+  'src/resource-providers/commands/schema.ts',
+  'src/plugins/sdk/resources.ts',
   'docs/framework/live-control-plane.md',
   'src/resource-providers/contracts.ts',
   'src/resource-providers/definition.ts',
   'src/resource-providers/context.ts',
-  'src/resource-providers/dispatch.ts',
   'src/resource-providers/http.ts',
   'src/plugins/sdk/resource-http.ts',
   'src/permissions/capability-policy.ts',
@@ -144,6 +150,15 @@ const contracts = [
   'src/runtime/delivery.ts',
   'src/http/job-routes.ts'
 ]
+await cp(join(framework, 'docs/framework/resource-providers.md'), join(target, 'resource-provider-design.md'))
+const resourceGuide = join(target, 'resource-providers.md')
+await writeFile(
+  resourceGuide,
+  (await readFile(resourceGuide, 'utf8')).replace(
+    '../framework/resource-providers.md',
+    'resource-provider-design.md'
+  )
+)
 const files: Record<string, string> = {}
 for (const path of contracts) {
   files[path] = createHash('sha256')
